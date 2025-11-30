@@ -54,7 +54,10 @@ class _MusicAppState extends State<MusicApp> {
                 return ListTile(
                   title: Text('Song name'),
                   subtitle: Text('Artist name'),
-                  trailing: Icon(Icons.skip_next),
+                  trailing: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.skip_next),
+                  ),
                   leading: Text("${index + 1}"),
                 );
               },
