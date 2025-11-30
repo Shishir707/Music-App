@@ -14,36 +14,37 @@ class _MusicAppState extends State<MusicApp> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final List<Song> playList = [
     Song(
-      songName: "Sample 1",
-      artistName: "N/A",
+      songName: "Quick Beat",
+      artistName: "SoundTest",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-3s.mp3",
       totalDuration: 3,
     ),
     Song(
-      songName: "Sample 2",
-      artistName: "N/A",
+      songName: "Mini Melody",
+      artistName: "SoundTest",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-6s.mp3",
       totalDuration: 6,
     ),
     Song(
-      songName: "Sample 3",
-      artistName: "N/A",
+      songName: "Tiny Tune",
+      artistName: "SoundTest",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
       totalDuration: 9,
     ),
     Song(
-      songName: "Sample 4",
-      artistName: "N/A",
+      songName: "Short Harmony",
+      artistName: "SoundTest",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
       totalDuration: 12,
     ),
     Song(
-      songName: "Sample 5",
-      artistName: "N/A",
+      songName: "Micro Rhythm",
+      artistName: "SoundTest",
       songUrl: "https://samplelib.com/lib/preview/mp3/sample-15s.mp3",
       totalDuration: 15,
     ),
   ];
+
 
   int currentIndex = 0;
   bool isPlay = false;
