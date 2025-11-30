@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/model/song.dart';
@@ -50,7 +49,7 @@ class _MusicAppState extends State<MusicApp> {
   bool isPlay = false;
 
   Duration songDuration = Duration.zero;
-  Duration position = Duration.zero;
+  Duration currentPosition = Duration.zero;
 
   @override
   void initState() {
@@ -63,7 +62,7 @@ class _MusicAppState extends State<MusicApp> {
   Widget build(BuildContext context) {
     final Song song = playList[currentIndex];
     final double totalDuration = max(songDuration.inSeconds.toDouble(), 1);
-    final double currentPosition = position.inSeconds.toDouble().clamp(
+    final double currentPosition = this.currentPosition.inSeconds.toDouble().clamp(
       0,
       totalDuration,
     );
@@ -86,11 +85,22 @@ class _MusicAppState extends State<MusicApp> {
               children: [
                 Text(song.songName),
                 Text(song.artistName),
-                Slider(value: 0, onChanged: (value) {}),
+                Slider(
+                  min: 0,
+                  max: totalDuration,
+                  value: currentPosition,
+                  onChanged: (value) async {
+                    setState(() {
+
+                    });
+                    final position = Duration(seconds: value.toInt());
+                    await _audioPlayer.seek(position);
+                  },
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(timeFormat(position)),
+                    Text(timeFormat(this.currentPosition)),
                     Text(timeFormat(songDuration)),
                   ],
                 ),
@@ -137,14 +147,14 @@ class _MusicAppState extends State<MusicApp> {
 
   void eventListener() {
     _audioPlayer.onDurationChanged.listen((duration) {
-      setState(() {
+        setState(() {
         songDuration = duration;
       });
     });
 
     _audioPlayer.onPositionChanged.listen((position) {
       setState(() {
-        position = position;
+        currentPosition = position;
       });
     });
 
@@ -164,7 +174,7 @@ class _MusicAppState extends State<MusicApp> {
     final song = playList[index];
     setState(() {
       songDuration = Duration(seconds: song.totalDuration);
-      position = Duration.zero;
+      currentPosition = Duration.zero;
     });
     await _audioPlayer.stop();
     await _audioPlayer.play(UrlSource(song.songUrl));
