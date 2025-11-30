@@ -11,13 +11,50 @@ class MusicApp extends StatefulWidget {
 
 class _MusicAppState extends State<MusicApp> {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final List<Song> playList = [];
+  final List<Song> playList = [
+    Song(
+      songName: "Sample 1",
+      artistName: "N/A",
+      songUrl: "https://samplelib.com/lib/preview/mp3/sample-3s.mp3",
+      totalDuration: 3,
+    ),
+    Song(
+      songName: "Sample 2",
+      artistName: "N/A",
+      songUrl: "https://samplelib.com/lib/preview/mp3/sample-6s.mp3",
+      totalDuration: 6,
+    ),
+    Song(
+      songName: "Sample 3",
+      artistName: "N/A",
+      songUrl: "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
+      totalDuration: 9,
+    ),
+    Song(
+      songName: "Sample 4",
+      artistName: "N/A",
+      songUrl: "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
+      totalDuration: 12,
+    ),
+    Song(
+      songName: "Sample 5",
+      artistName: "N/A",
+      songUrl: "https://samplelib.com/lib/preview/mp3/sample-15s.mp3",
+      totalDuration: 15,
+    ),
+  ];
 
   int currentIndex = 0;
   bool isPlay = false;
 
   Duration songDuration = Duration.zero;
   Duration position = Duration.zero;
+
+  @override
+  void initState() {
+    eventListener();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,16 +97,17 @@ class _MusicAppState extends State<MusicApp> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 5,
+              itemCount: playList.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text('Song name'),
-                  subtitle: Text('Artist name'),
+                  title: Text(playList[index].songName),
+                  subtitle: Text(playList[index].artistName),
                   trailing: IconButton(
                     onPressed: () {},
                     icon: Icon(Icons.skip_next),
                   ),
                   leading: Text("${index + 1}"),
+                  onTap: () => _playSong(index),
                 );
               },
             ),
@@ -77,6 +115,30 @@ class _MusicAppState extends State<MusicApp> {
         ],
       ),
     );
+  }
+
+  void eventListener() {
+    _audioPlayer.onDurationChanged.listen((duration) {
+      setState(() {
+        songDuration = duration;
+      });
+    });
+
+    _audioPlayer.onPositionChanged.listen((position) {
+      setState(() {
+        position = position;
+      });
+    });
+
+    _audioPlayer.onPlayerStateChanged.listen((state) {
+      setState(() {
+        isPlay = state == PlayerState.playing;
+      });
+    });
+
+    _audioPlayer.onPlayerComplete.listen((_) {
+      nextSong();
+    });
   }
 
   Future<void> _playSong(int index) async {
@@ -87,7 +149,7 @@ class _MusicAppState extends State<MusicApp> {
       position = Duration.zero;
     });
     await _audioPlayer.stop();
-    await _audioPlayer.play(UrlSource(playList[index].songUrl));
+    await _audioPlayer.play(UrlSource(song.songUrl));
   }
 
   Future<void> nextSong() async {
