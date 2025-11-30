@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/model/song.dart';
@@ -53,11 +55,19 @@ class _MusicAppState extends State<MusicApp> {
   @override
   void initState() {
     eventListener();
+    _playSong(currentIndex);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final Song song = playList[currentIndex];
+    final double totalDuration = max(songDuration.inSeconds.toDouble(), 1);
+    final double currentPosition = position.inSeconds.toDouble().clamp(
+      0,
+      totalDuration,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -74,22 +84,31 @@ class _MusicAppState extends State<MusicApp> {
             color: Colors.grey[50],
             child: Column(
               children: [
-                Text("Song name"),
-                Text('Artist name'),
+                Text(song.songName),
+                Text(song.artistName),
                 Slider(value: 0, onChanged: (value) {}),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text('Current Time'), Text("Total Duration")],
+                  children: [
+                    Text(timeFormat(position)),
+                    Text(timeFormat(songDuration)),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: previousSong,
                       icon: Icon(Icons.skip_previous),
                     ),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.pause)),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.skip_next)),
+                    IconButton(
+                      onPressed: toggleButton,
+                      icon: Icon(isPlay ? Icons.pause : Icons.play_arrow),
+                    ),
+                    IconButton(
+                      onPressed: nextSong,
+                      icon: Icon(Icons.skip_next),
+                    ),
                   ],
                 ),
               ],
@@ -99,15 +118,14 @@ class _MusicAppState extends State<MusicApp> {
             child: ListView.builder(
               itemCount: playList.length,
               itemBuilder: (context, index) {
+                final bool isPlayNow = index == currentIndex;
                 return ListTile(
                   title: Text(playList[index].songName),
                   subtitle: Text(playList[index].artistName),
-                  trailing: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.skip_next),
-                  ),
+                  trailing: Icon(isPlayNow ? Icons.pause : Icons.play_arrow),
                   leading: Text("${index + 1}"),
                   onTap: () => _playSong(index),
+                  selected: isPlayNow,
                 );
               },
             ),
@@ -168,5 +186,12 @@ class _MusicAppState extends State<MusicApp> {
     } else {
       _audioPlayer.resume();
     }
+  }
+
+  String timeFormat(Duration duration) {
+    final minute = duration.inMinutes;
+    final second = duration.inSeconds.remainder(60);
+
+    return "$minute ${second.toString().padLeft(2, "0")}";
   }
 }
