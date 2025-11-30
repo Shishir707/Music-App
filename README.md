@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+## App Screenshot
+
+![Music App Screenshot](music_app.png)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
