@@ -28,7 +28,7 @@ class _MusicAppState extends State<MusicApp> {
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue.shade200,
+        backgroundColor: Colors.yellow.shade300,
       ),
       body: Column(
         children: [
